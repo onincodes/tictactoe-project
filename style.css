@@ -44,7 +44,7 @@ body {
   flex-direction: row;
   align-content: center;
   justify-content: center;
-  gap: 80px;
+  gap: 60px;
 }
 
 #prev,
@@ -61,6 +61,11 @@ body {
   color: white;
   border-color: #aaff01;
   background-color: black;
+  cursor: pointer;
+}
+
+#reset {
+  height: 40px;
   cursor: pointer;
 }
 
