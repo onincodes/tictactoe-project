@@ -49,6 +49,7 @@ body {
 
 #prev,
 #next {
+  opacity: 0;
   text-align: center;
   justify-items: center;
   font-weight: 700;
@@ -62,6 +63,14 @@ body {
   border-color: #aaff01;
   background-color: black;
   cursor: pointer;
+}
+
+#prev.show {
+  opacity: 1;
+}
+
+#next.show {
+  opacity: 1;
 }
 
 #reset {
