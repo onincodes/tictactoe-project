@@ -13,31 +13,39 @@ let state = [];
 let moves = 0;
 let playerTurn1 = true; // True = X, False = O
 
-// Loop through all cells and add click event listeners
-for (let i = 0; i < cells.length; i++) {
-  cells[i].addEventListener("click", function () {
-    addMove(cells[i], i);
-  });
+function createBoard() {
+  for (let i = 0; i < 9; i++) {
+    let tictactoeGrid = document.createElement("div");
+    tictactoeGrid.classList.add("cell");
+    tictactoeGrid.setAttribute("id", `box${i}`);
+
+    board.appendChild(tictactoeGrid);
+
+    tictactoeGrid.addEventListener("click", () => {
+      addMove(tictactoeGrid, i);
+    });
+  }
 }
 
 function addMove(element, boxNumber) {
   moves++;
 
-  let specificGrid = element; // The clicked cell is already passed as 'element'
-
-  // If grid is empty
-  if (!specificGrid.textContent) {
+  // Check if the cell is empty
+  if (!element.textContent) {
     if (playerTurn1) {
-      specificGrid.textContent = "X";
+      element.textContent = "X";
       playerTurn1 = false;
     } else {
-      specificGrid.textContent = "O";
+      element.textContent = "O";
       playerTurn1 = true;
     }
   }
 
-  updateBoard(specificGrid, boxNumber);
+  updateBoard(element, boxNumber);
 }
+
+// Call createBoard to generate the grid
+createBoard();
 
 function updateBoard(element, boxNumber) {
   let row = Math.floor(boxNumber / 3);

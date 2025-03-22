@@ -28,6 +28,12 @@ body {
 }
 
 .cell {
+  color: black;
+  font-weight: 700;
+  font-size: 81px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+
   background-color: #aaff01;
   border-radius: 5px;
   width: 100%;
@@ -76,12 +82,4 @@ body {
 #reset {
   height: 40px;
   cursor: pointer;
-}
-
-.cell {
-  color: black;
-  font-weight: 700;
-  font-size: 81px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
