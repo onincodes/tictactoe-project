@@ -1,7 +1,7 @@
 let board = document.getElementById("board");
 let prev = document.getElementById("prev");
 let next = document.getElementById("next");
-let cells = document.getElementsByClassName("cell");
+let reset = document.getElementById("reset");
 
 let gameBoard = [
   ["", "", ""],
@@ -44,7 +44,6 @@ function addMove(element, boxNumber) {
   updateBoard(element, boxNumber);
 }
 
-// Call createBoard to generate the grid
 createBoard();
 
 function updateBoard(element, boxNumber) {
@@ -94,3 +93,22 @@ function reflectBoard(index) {
 }
 
 prev.addEventListener("click", () => reflectBoard(1));
+
+// Reset function
+function resetGame() {
+  gameBoard = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+  ];
+
+  state = [];
+  moves = 0;
+  playerTurn1 = true;
+
+  prev.classList.remove("show");
+
+  document.querySelectorAll(".cell").forEach((cell) => (cell.textContent = ""));
+}
+
+reset.addEventListener("click", resetGame);
