@@ -13,6 +13,7 @@ let state = [];
 let moves = 0;
 let playerTurn1 = true; // True = X, False = O
 let currentIndex = -1; // to track current history position
+let gameOver = false; // track if the game is already finished
 
 // Winning patterns
 const winPatterns = [
@@ -44,8 +45,9 @@ function createBoard() {
 
 createBoard(); // call to create the main board
 
+// to add X or O
 function addMove(element, boxNumber) {
-  if (element.textContent) return; // prevent overwiting moves
+  if (element.textContent) return; // prevent adding a move to an already occupied cell
 
   moves++;
 
@@ -63,6 +65,7 @@ function addMove(element, boxNumber) {
   updateBoard(element, boxNumber);
 }
 
+// to update the main board
 function updateBoard(element, boxNumber) {
   let row = Math.floor(boxNumber / 3);
   let column = boxNumber % 3;
@@ -71,6 +74,7 @@ function updateBoard(element, boxNumber) {
   updateState(gameBoard);
 }
 
+// update the board (index) state
 function updateState(boardCopy) {
   const newBoard = [];
   for (let i = 0; i < boardCopy.length; i++) {
@@ -87,33 +91,71 @@ function updateState(boardCopy) {
   }
 
   state.push(newBoard);
-  currentIndex = state.length - 1; // updates history index
+  currentIndex = state.length - 1; // updates currentIndex to track the latest move in history
 
   console.log(state);
 
   checkEndGame();
 }
 
+// check for winner
+function checkWinner() {
+  let flatBoard = gameBoard.flat(); // convert 2D board to 1D array
+
+  for (let pattern of winPatterns) {
+    let [a, b, c] = pattern;
+
+    // check if all three positions in the pattern contain the same player ("X" or "O")
+    if (
+      flatBoard[a] &&
+      flatBoard[a] === flatBoard[b] &&
+      flatBoard[a] === flatBoard[c]
+    ) {
+      return flatBoard[a] === "X" ? "X" : "O"; // explicitly return "X" or "O"
+    }
+  }
+
+  return null; // no winner yet
+}
+
+// to check if the game is over
 function checkEndGame() {
-  // show previous button when game ends
-  if (moves === 9) {
+  let winner = checkWinner();
+  let isDraw = moves === 9 && !winner;
+
+  // show buttons when game is over
+  if (winner || isDraw) {
     prev.classList.add("show");
+    next.classList.add("show");
   }
 
   // enable/disable Prev Button
   prev.disabled = currentIndex <= 0;
 
   // enable/disable Next Button
-  next.disabled = currentIndex >= state.length - 1 ? true : false;
+  next.disabled = currentIndex >= state.length - 1;
 
-  // show Next button when moving back in history
+  // show Next button only if rewinding is possible (future moves exist)
   if (currentIndex < state.length - 1) {
     next.classList.add("show");
   } else {
     next.classList.remove("show");
   }
+
+  // show the alert ONLY when the game ends naturally
+  if (!gameOver && (winner || isDraw) && currentIndex === state.length - 1) {
+    gameOver = true; // mark game as over
+    setTimeout(() => {
+      if (winner) {
+        alert(`Player ${winner} wins!`);
+      } else {
+        alert("It's a draw!");
+      }
+    }, 100);
+  }
 }
 
+// updates the UI to match a past move without changing the actual game state
 function reflectBoard(index) {
   if (index < 0 || index >= state.length) return;
 
@@ -141,7 +183,7 @@ next.addEventListener("click", () => {
   }
 });
 
-// Reset function
+// reset function
 function resetGame() {
   gameBoard = [
     ["", "", ""],
@@ -152,7 +194,8 @@ function resetGame() {
   state = [];
   moves = 0;
   playerTurn1 = true;
-  currentIndex = -1; // reset history index
+  currentIndex = -1;
+  gameOver = false; // allows a new game to start after resetting
 
   prev.classList.remove("show");
   next.classList.remove("show");
@@ -161,7 +204,7 @@ function resetGame() {
 
   document.querySelectorAll(".cell").forEach((cell) => (cell.textContent = ""));
 
-  checkEndGame(); // ensure buttons are properly updated after reset
+  checkEndGame(); // ensure buttons update correctly
 }
 
 reset.addEventListener("click", resetGame);
