@@ -82,19 +82,25 @@ function updateState(boardCopy) {
     for (let j = 0; j < boardCopy[i].length; j++) {
       row.push(boardCopy[i][j]);
     }
-
     newBoard.push(row);
   }
 
   if (currentIndex !== state.length - 1) {
-    state = state.slice(0, currentIndex + 1); //remove future states if rewinding
+    state = state.slice(0, currentIndex + 1);
+  }
+
+  if (state.length === 0) {
+    state.push([
+      ["", "", ""],
+      ["", "", ""],
+      ["", "", ""],
+    ]);
   }
 
   state.push(newBoard);
   currentIndex = state.length - 1; // updates currentIndex to track the latest move in history
 
   console.log(state);
-
   checkEndGame();
 }
 
@@ -123,34 +129,29 @@ function checkEndGame() {
   let winner = checkWinner();
   let isDraw = moves === 9 && !winner;
 
-  // show buttons when game is over
+  // show prev/next buttons only when the game is over
   if (winner || isDraw) {
     prev.classList.add("show");
     next.classList.add("show");
-  }
-
-  // enable/disable Prev Button
-  prev.disabled = currentIndex <= 0;
-
-  // enable/disable Next Button
-  next.disabled = currentIndex >= state.length - 1;
-
-  // show Next button only if rewinding is possible (future moves exist)
-  if (currentIndex < state.length - 1) {
-    next.classList.add("show");
   } else {
+    prev.classList.remove("show");
     next.classList.remove("show");
   }
 
-  // show the alert ONLY when the game ends naturally
+  // hide prev button if there's no previous state
+  if (currentIndex === 0) {
+    prev.classList.remove("show");
+  }
+
+  // hide next button if there's no next state
+  if (currentIndex === state.length - 1) {
+    next.classList.remove("show");
+  }
+
   if (!gameOver && (winner || isDraw) && currentIndex === state.length - 1) {
-    gameOver = true; // mark game as over
+    gameOver = true;
     setTimeout(() => {
-      if (winner) {
-        alert(`Player ${winner} wins!`);
-      } else {
-        alert("It's a draw!");
-      }
+      alert(winner ? `Player ${winner} wins!` : "It's a draw!");
     }, 100);
   }
 }
@@ -191,20 +192,25 @@ function resetGame() {
     ["", "", ""],
   ];
 
-  state = [];
+  state = [
+    [
+      ["", "", ""],
+      ["", "", ""],
+      ["", "", ""],
+    ],
+  ];
   moves = 0;
   playerTurn1 = true;
-  currentIndex = -1;
-  gameOver = false; // allows a new game to start after resetting
-
-  prev.classList.remove("show");
-  next.classList.remove("show");
-  prev.disabled = true;
-  next.disabled = true;
+  currentIndex = 0;
+  gameOver = false;
 
   document.querySelectorAll(".cell").forEach((cell) => (cell.textContent = ""));
 
-  checkEndGame(); // ensure buttons update correctly
+  // ensure prev/next buttons are hidden on reset
+  prev.classList.remove("show");
+  next.classList.remove("show");
+
+  checkEndGame();
 }
 
 reset.addEventListener("click", resetGame);
