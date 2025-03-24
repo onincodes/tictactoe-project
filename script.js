@@ -9,7 +9,7 @@ let gameBoard = [
   ["", "", ""],
 ];
 
-let state = [];
+let state = []; // history array
 let moves = 0;
 let playerTurn1 = true; // True = X, False = O
 let currentIndex = -1; // to track current history position
@@ -35,6 +35,7 @@ function createBoard() {
 
     board.appendChild(tictactoeGrid);
 
+    // check if the move is the latest move
     tictactoeGrid.addEventListener("click", () => {
       if (currentIndex !== state.length - 1) return; // prevent moves in history view
 
@@ -47,19 +48,16 @@ createBoard(); // call to create the main board
 
 // to add X or O
 function addMove(element, boxNumber) {
-  if (element.textContent) return; // prevent adding a move to an already occupied cell
+  if (gameOver || element.textContent) return; // prevent moves if game is over or cell is occupied
 
   moves++;
 
-  // Check if the cell is empty
-  if (!element.textContent) {
-    if (playerTurn1) {
-      element.textContent = "X";
-      playerTurn1 = false;
-    } else {
-      element.textContent = "O";
-      playerTurn1 = true;
-    }
+  if (playerTurn1) {
+    element.textContent = "X";
+    playerTurn1 = false;
+  } else {
+    element.textContent = "O";
+    playerTurn1 = true;
   }
 
   updateBoard(element, boxNumber);
@@ -74,7 +72,7 @@ function updateBoard(element, boxNumber) {
   updateState(gameBoard);
 }
 
-// update the board (index) state
+// this function makes a copy of the gameBoard but not linked. To use as history state.
 function updateState(boardCopy) {
   const newBoard = [];
   for (let i = 0; i < boardCopy.length; i++) {
@@ -83,10 +81,6 @@ function updateState(boardCopy) {
       row.push(boardCopy[i][j]);
     }
     newBoard.push(row);
-  }
-
-  if (currentIndex !== state.length - 1) {
-    state = state.slice(0, currentIndex + 1);
   }
 
   if (state.length === 0) {
