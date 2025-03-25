@@ -82,4 +82,9 @@ body {
 #reset {
   height: 40px;
   cursor: pointer;
+  transition: transform 0.1s;
+}
+
+#reset:active {
+  transform: scale(0.9);
 }

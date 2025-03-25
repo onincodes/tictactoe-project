@@ -152,15 +152,17 @@ function checkEndGame() {
 
 // updates the UI to match a past move without changing the actual game state
 function reflectBoard(index) {
-  if (index < 0 || index >= state.length) return;
+  if (index < 0 || index >= state.length) return; // to avoid out-of-bounds errors
 
   let tempBoard = state[index];
   let moveString = tempBoard.flat();
 
+  // updates the textContent to match the stored move data (moveString[grid])
   for (let grid = 0; grid < moveString.length; grid++) {
     document.getElementById(`box${grid}`).textContent = moveString[grid];
   }
 
+  // keeps track of the current move number so that the game knows which move is being displayed
   currentIndex = index;
 
   checkEndGame();
